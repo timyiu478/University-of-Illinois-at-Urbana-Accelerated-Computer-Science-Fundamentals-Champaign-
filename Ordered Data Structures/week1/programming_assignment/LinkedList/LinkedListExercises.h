@@ -128,6 +128,48 @@ void LinkedList<T>::insertOrdered(const T& newData) {
   // to update all next, prev, head_, and tail_ pointers as needed on your
   // new node or on those existing nodes that are adjacent to the new node.
 
+  Node * head = head_;
+  Node * tail = tail_;
+  Node * prev = NULL;
+  Node * newNode = new Node(newData);
+
+  // update size
+  size_++;
+
+  // 0 node case 
+  if (head_ == NULL && tail_ == NULL) {
+    head_ = newNode; 
+    tail_ = newNode; 
+    return;
+  }
+  
+  // smallest case
+  if (head_->data >= newData) {
+    head->prev = newNode;
+    newNode->next = head;
+    head_ = newNode;
+    return;
+  }
+
+  // largest case
+  if (tail_->data <= newData) {
+    tail->next = newNode;
+    newNode->prev = tail;
+    tail_ = newNode;
+    return;
+  }
+
+  while(head != NULL && head->data < newData) {
+    prev = head;
+    head = head->next;
+  }
+
+  prev->next = newNode;
+  newNode->next = head;
+  head->prev = newNode;
+  newNode->prev = prev;
+  
+  return;
 }
 
 /********************************************************************
@@ -222,6 +264,27 @@ LinkedList<T> LinkedList<T>::merge(const LinkedList<T>& other) const {
   // the final result we want. This is what we will return at the end of
   // the function.
   LinkedList<T> merged;
+
+  Node * l = left.getHeadPtr();
+  Node * r = right.getHeadPtr();
+
+  while(l != NULL && r != NULL) {
+    if (l->data <= r->data) {
+      merged.pushBack(l->data);
+      l = l->next;
+    } else {
+      merged.pushBack(r->data);
+      r = r->next;
+    }
+  }
+  while(l != NULL) {
+    merged.pushBack(l->data);
+    l = l->next;
+  }
+  while (r != NULL) {
+    merged.pushBack(r->data);
+    r = r->next;
+  }
 
   // -----------------------------------------------------------
   // TODO: Your code here!
