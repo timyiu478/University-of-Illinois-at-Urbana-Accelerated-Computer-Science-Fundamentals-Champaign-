@@ -52,6 +52,11 @@ int GridGraph::countEdges() const {
   // =======================================================================
   // TODO: Your code here!
   // =======================================================================
+  for (auto& [_, set]: adjacencyMap) {
+    numEdges += set.size();
+  }
+
+  numEdges /= 2;
 
   return numEdges;
 }
@@ -100,7 +105,11 @@ void GridGraph::removePoint(const IntPair& p1) {
 
   // =======================================================================
   // TODO: Your code here!
-  // =======================================================================
+  // ======================================================================
+ for(auto & neighbor: originalNeighbors){
+  adjacencyMap.at(neighbor).erase(p1);
+ }
+  adjacencyMap.erase(p1);
 }
 
 // =========================================================================
@@ -295,7 +304,7 @@ std::list<IntPair> graphBFS(const IntPair& start, const IntPair& goal, const Gri
     // TODO: Your code here!
     // We'll need to loop over the neighbors that are the points adjacent to curPoint.
     // Get a copy of the set of neighbors we're going to loop over.
-    GridGraph::NeighborSet neighbors; // Change this...
+    GridGraph::NeighborSet neighbors = graph.adjacencyMap.at(curPoint);
     // =====================================================================
 
     for (auto neighbor : neighbors) {
@@ -303,7 +312,7 @@ std::list<IntPair> graphBFS(const IntPair& start, const IntPair& goal, const Gri
       // ==================================================================
       // TODO: Your code here!
       // Check whether the neighbor has already been visited.
-      bool neighborWasAlreadyVisited = false; // Change this...
+      bool neighborWasAlreadyVisited = visitedSet.count(neighbor); 
       // ==================================================================
 
       // If this adjacent vertex has NOT been visited before, we will visit it now.
@@ -317,13 +326,13 @@ std::list<IntPair> graphBFS(const IntPair& start, const IntPair& goal, const Gri
         // Record that the curPoint is the predecessor of the neighbor point,
         // since curPoint has just led to the discovery of this neighbor for
         // the first time.
-        // ...
+        pred[neighbor] = curPoint; 
 
         // Add neighbor to the visited set.
-        // ...
+        visitedSet.insert(neighbor); 
 
         // Push neighbor into the exploration queue.
-        // ...
+        exploreQ.push(neighbor);
 
         // ================================================================
 
@@ -511,7 +520,7 @@ std::list<PuzzleState> puzzleBFS(const PuzzleState& start, const PuzzleState& go
     // We'll need to loop over the neighbors that are the points adjacent to curState.
     // We need a collection of neighbors we're going to loop over.
     
-    auto neighbors = {start}; // Change this! This line is totally wrong.
+    auto neighbors = curState.getAdjacentStates();
 
     // Hint: Look at PuzzleState.h
     // =====================================================================
@@ -521,24 +530,23 @@ std::list<PuzzleState> puzzleBFS(const PuzzleState& start, const PuzzleState& go
       // ==================================================================
       // TODO: Your code here!
       // Check whether the neighbor has already been visited.
-      bool neighborWasAlreadyVisited = false; // Change this...
+      bool neighborWasAlreadyVisited = visitedSet.count(neighbor);
       // ==================================================================
 
       if (!neighborWasAlreadyVisited) {
 
         // ================================================================
-        // TODO: Your code here!
 
         // Record that the curState is the predecessor of the neighbor point,
         // since curState has just led to the discovery of this neighbor for
         // the first time.
-        // ...
+        pred[neighbor] = curState;
 
         // Add neighbor to the visited set.
-        // ...
+        visitedSet.insert(neighbor); 
 
         // Push neighbor into the exploration queue.
-        // ...
+        exploreQ.push(neighbor);  
 
         // ================================================================
 
